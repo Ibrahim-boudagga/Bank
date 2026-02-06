@@ -21,7 +21,6 @@ class _WalletAnimationScreenState extends State<WalletAnimationScreen>
   late AnimationController _rollController;
   bool _isProfileOpen = false;
   double _islandExpansionProgress = 0.0;
-  double _rollOffset = 0.0;
 
   @override
   void initState() {
@@ -70,18 +69,18 @@ class _WalletAnimationScreenState extends State<WalletAnimationScreen>
     final topPadding = MediaQuery.of(context).padding.top;
     final rollTarget = screenHeight * 0.75;
 
-    _rollOffset = _rollController.value * rollTarget;
-    final progress = (_rollOffset / rollTarget).clamp(0.0, 1.0);
-    final avatarAlpha = (1.0 - (_islandExpansionProgress * 6.0)).clamp(0.0, 1.0);
-
     // Update status bar style
     SystemChrome.setSystemUIOverlayStyle(
-      progress < 0.5 ? SystemUiOverlayStyle.light : SystemUiOverlayStyle.dark,
+      (_rollController.value < 0.5) ? SystemUiOverlayStyle.light : SystemUiOverlayStyle.dark,
     );
 
     return AnimatedBuilder(
       animation: _rollController,
       builder: (context, child) {
+        final rollOffset = _rollController.value * rollTarget;
+        final progress = (_rollController.value).clamp(0.0, 1.0);
+        final avatarAlpha = (1.0 - (_islandExpansionProgress * 6.0)).clamp(0.0, 1.0);
+
         return Container(
           color: AppColors.spaceEnd,
           child: Stack(
@@ -96,17 +95,11 @@ class _WalletAnimationScreenState extends State<WalletAnimationScreen>
 
               // Home content (rolling foreground)
               Transform.translate(
-                offset: Offset(0, _rollOffset),
-                child: _buildRollingSurface(
-                  context,
-                  screenWidth,
-                  _rollOffset,
-                  progress,
-                  topPadding,
-                ),
+                offset: Offset(0, rollOffset),
+                child: _buildRollingSurface(context, screenWidth, rollOffset, progress, topPadding),
               ),
 
-              // Shared avatar (morphing)
+              // Shared avatar (morphing with Hero animation)
               if (avatarAlpha > 0)
                 SharedProfileAvatar(
                   progress: progress,

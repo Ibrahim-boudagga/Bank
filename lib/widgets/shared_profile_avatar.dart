@@ -44,31 +44,87 @@ class SharedProfileAvatar extends StatelessWidget {
       top: currentY,
       child: IgnorePointer(
         ignoring: alpha <= 0.01,
-        child: Opacity(
-          opacity: alpha,
-          child: GestureDetector(
-            onTap: onClick,
-            behavior: HitTestBehavior.opaque,
-            child: Container(
-              width: currentSize,
-              height: currentSize,
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                gradient: const LinearGradient(
-                  colors: [AppColors.spaceStart, AppColors.spaceEnd],
-                  begin: Alignment.topCenter,
-                  end: Alignment.bottomCenter,
-                ),
-                border: Border.all(color: borderColor, width: currentBorderWidth),
-                boxShadow: [
-                  BoxShadow(
-                    color: AppColors.electricAccent.withOpacity(0.8),
-                    blurRadius: currentShadow,
-                    spreadRadius: currentShadow * 0.1,
+        child: Hero(
+          tag: 'profile_avatar',
+          flightShuttleBuilder:
+              (
+                BuildContext flightContext,
+                Animation<double> animation,
+                HeroFlightDirection flightDirection,
+                BuildContext fromHeroContext,
+                BuildContext toHeroContext,
+              ) {
+                return AnimatedBuilder(
+                  animation: animation,
+                  builder: (context, child) {
+                    return FadeTransition(
+                      opacity: animation,
+                      child: ScaleTransition(
+                        scale: animation.drive(
+                          Tween<double>(
+                            begin: 0.8,
+                            end: 1.0,
+                          ).chain(CurveTween(curve: Curves.easeOutCubic)),
+                        ),
+                        child: child!,
+                      ),
+                    );
+                  },
+                  child: Material(
+                    color: Colors.transparent,
+                    child: Container(
+                      width: currentSize,
+                      height: currentSize,
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        gradient: const LinearGradient(
+                          colors: [AppColors.spaceStart, AppColors.spaceEnd],
+                          begin: Alignment.topCenter,
+                          end: Alignment.bottomCenter,
+                        ),
+                        border: Border.all(color: borderColor, width: currentBorderWidth),
+                        boxShadow: [
+                          BoxShadow(
+                            color: AppColors.electricAccent.withOpacity(0.8),
+                            blurRadius: currentShadow,
+                            spreadRadius: currentShadow * 0.1,
+                          ),
+                        ],
+                      ),
+                      child: Icon(Icons.person, color: Colors.white, size: currentIconSize),
+                    ),
                   ),
-                ],
+                );
+              },
+          child: Opacity(
+            opacity: alpha,
+            child: GestureDetector(
+              onTap: onClick,
+              behavior: HitTestBehavior.opaque,
+              child: Material(
+                color: Colors.transparent,
+                child: Container(
+                  width: currentSize,
+                  height: currentSize,
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    gradient: const LinearGradient(
+                      colors: [AppColors.spaceStart, AppColors.spaceEnd],
+                      begin: Alignment.topCenter,
+                      end: Alignment.bottomCenter,
+                    ),
+                    border: Border.all(color: borderColor, width: currentBorderWidth),
+                    boxShadow: [
+                      BoxShadow(
+                        color: AppColors.electricAccent.withOpacity(0.8),
+                        blurRadius: currentShadow,
+                        spreadRadius: currentShadow * 0.1,
+                      ),
+                    ],
+                  ),
+                  child: Icon(Icons.person, color: Colors.white, size: currentIconSize),
+                ),
               ),
-              child: Icon(Icons.person, color: Colors.white, size: currentIconSize),
             ),
           ),
         ),
