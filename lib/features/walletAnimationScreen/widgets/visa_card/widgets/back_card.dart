@@ -32,7 +32,7 @@ class _VcisaCardBack extends StatelessWidget {
             Column(
               spacing: AppSpacing.lg,
               children: [
-                const SizedBox(height: AppSpacing.md),
+                const VerticalSpacing(spacing: AppSpacing.md),
                 Container(
                   width: double.infinity,
                   height: 40,
