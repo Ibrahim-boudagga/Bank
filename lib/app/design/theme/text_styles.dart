@@ -138,4 +138,19 @@ class AppTextStyles {
   );
 
   static const TextStyle cardBackCvvLabel = TextStyle(fontSize: 10, color: Colors.black54);
+
+  /// Signature strip placeholder (e.g. "Authorized Signature").
+  static const TextStyle cardBackSignature = TextStyle(
+    fontSize: 10,
+    fontStyle: .italic,
+    color: Colors.black54,
+  );
+
+  /// CVC value (e.g. "892") — use copyWith(color: AppColors.electricAccent).
+  static const TextStyle cardBackCvcValue = TextStyle(
+    fontSize: 16,
+    fontWeight: FontWeight.w800,
+    fontFamily: 'monospace',
+    letterSpacing: 2,
+  );
 }

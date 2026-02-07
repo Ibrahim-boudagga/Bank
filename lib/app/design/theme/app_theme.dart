@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 
 import '../colors/app_colors.dart';
 
+part 'app_gradients.dart';
 part 'border_radius.dart';
 part 'shadows.dart';
 part 'spacing.dart';

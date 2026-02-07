@@ -1,4 +1,5 @@
 import 'package:bank/app/design/colors/app_colors.dart';
+import 'package:bank/app/design/theme/app_theme.dart';
 import 'package:flutter/material.dart';
 
 import 'controller/visa_card_controller.dart';
@@ -62,7 +63,11 @@ class _VcisaCardState extends State<VcisaCard> with TickerProviderStateMixin {
                 : Transform(
                     alignment: .center,
                     transform: .identity()..rotateY(3.14159),
-                    child: _VcisaCardBack(height: cardHeight),
+                    child: _VcisaCardBack(
+                      height: cardHeight,
+                      cvc: '892',
+                      cardHolder: 'IRAHIM BOUDAGGA',
+                    ),
                   ),
           ),
         ),

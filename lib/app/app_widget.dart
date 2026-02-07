@@ -1,6 +1,6 @@
 import 'package:bank/app/config/app_config.dart';
 import 'package:bank/app/design/theme/app_theme.dart';
-import 'package:bank/screens/walletAnimationScreen/walet_animation_screen.dart';
+import 'package:bank/features/walletAnimationScreen/walet_animation_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
