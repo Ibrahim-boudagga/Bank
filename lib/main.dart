@@ -8,6 +8,7 @@ void main() {
   AppConfig()
     ..setAppName('Bank Wallet')
     ..setDebugShowCheckedModeBanner(false)
-    ..setAppTheme(.light);
+    ..setAppTheme(.light)
+    ..setShowPerformanceOverlay(false);
   runApp(const AppWidget());
 }

@@ -18,6 +18,8 @@ class AppWidget extends StatelessWidget {
       title: appConfig.appName ?? 'Bank Wallet',
       debugShowCheckedModeBanner: appConfig.debugShowCheckedModeBanner,
       theme: appConfig.appTheme ?? AppTheme.darkTheme,
+
+      showPerformanceOverlay: appConfig.showPerformanceOverlay,
       home: WalletAnimationScreen(),
     );
   }

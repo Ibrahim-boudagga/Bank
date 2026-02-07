@@ -5,6 +5,7 @@ import '../design/theme/app_theme.dart';
 class AppConfig {
   String? appName;
   bool debugShowCheckedModeBanner = false;
+  bool showPerformanceOverlay = false;
   ThemeData? appTheme;
   AppConfig setAppName(String name) {
     appName = name;
@@ -18,6 +19,11 @@ class AppConfig {
 
   AppConfig setAppTheme(Brightness brightness) {
     appTheme = brightness == .light ? AppTheme.lightTheme : AppTheme.darkTheme;
+    return this;
+  }
+
+  AppConfig setShowPerformanceOverlay(bool show) {
+    showPerformanceOverlay = show;
     return this;
   }
 }

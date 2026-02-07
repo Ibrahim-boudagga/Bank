@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 
 import '../../../common/widgets/spacing.dart';
 import 'controller/visa_card_controller.dart';
-import 'tools/background_overlay_painter.dart';
 import 'tools/visa_card_painter.dart';
 
 part 'widgets/back_card.dart';

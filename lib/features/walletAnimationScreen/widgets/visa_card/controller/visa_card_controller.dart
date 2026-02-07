@@ -90,9 +90,7 @@ class VisaCardController {
     final current = rotation.value;
     final normalizedAngle = (current % 360 + 360) % 360;
 
-    if (normalizedAngle >= 90 && normalizedAngle <= 270) {
-      flip();
-    }
+    if (normalizedAngle >= 90 && normalizedAngle <= 270) flip();
   }
 
   /// Flip to back face
@@ -100,9 +98,7 @@ class VisaCardController {
     final current = rotation.value;
     final normalizedAngle = (current % 360 + 360) % 360;
 
-    if (normalizedAngle < 90 || normalizedAngle > 270) {
-      flip();
-    }
+    if (normalizedAngle < 90 || normalizedAngle > 270) flip();
   }
 
   /// Reset card to front face
