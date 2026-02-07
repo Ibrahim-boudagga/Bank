@@ -69,6 +69,7 @@ abstract class BaseView<C extends BaseCubit> extends StatefulWidget {
   _State<BaseView, C>? _state;
 
   @override
+  // ignore: library_private_types_in_public_api
   _State<BaseView<BaseCubit<dynamic>>, C> createState() => _State<BaseView, C>();
 
   /// Builds the widget's UI based on the current [BuildContext].
