@@ -17,8 +17,8 @@ class AppWidget extends StatelessWidget {
     return MaterialApp(
       title: appConfig.appName ?? 'Bank Wallet',
       debugShowCheckedModeBanner: appConfig.debugShowCheckedModeBanner,
-      theme: AppTheme.lightTheme,
-      home: const WalletAnimationScreen(),
+      theme: appConfig.appTheme ?? AppTheme.darkTheme,
+      home: WalletAnimationScreen(),
     );
   }
 }

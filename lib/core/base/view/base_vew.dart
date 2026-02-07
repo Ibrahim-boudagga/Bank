@@ -11,7 +11,7 @@ import '../dependencies/dependencies.dart';
 /// Example:
 /// ```dart
 /// class LoginScreen extends BaseView<LoginCubit> {
-///   LoginScreen({super.key}) : super(dependencies: LoginDependencies());
+///   const LoginScreen({super.key}) : super();
 ///
 ///   @override
 ///   Widget build(BuildContext context) {
@@ -38,7 +38,7 @@ abstract class BaseView<C extends BaseCubit> extends StatefulWidget {
   /// and current state of the [Cubit].
   /// - [onUpdate]: Optional callback when state updates
   /// - [fullRebuildWhen]: Optional. A function that decides when to rebuild the entire widget
-  BaseView({
+  const BaseView({
     super.key,
     this.dependencies,
     this.lazy = true,
@@ -64,9 +64,29 @@ abstract class BaseView<C extends BaseCubit> extends StatefulWidget {
   final bool debugStateChanges;
 
   /// The [Cubit] provided to the widget.
-  C get cubit => _state!.cubit;
-
-  _State<BaseView, C>? _state;
+  ///
+  /// Note: This getter can only be accessed after the widget is mounted.
+  /// Use it in the build method or lifecycle methods, not in the constructor.
+  ///
+  /// Example:
+  /// ```dart
+  /// @override
+  /// Widget build(BuildContext context) {
+  ///   final cubit = this.cubit; // Access cubit here
+  ///   return ...
+  /// }
+  /// ```
+  C get cubit {
+    // Access cubit via state registry
+    final state = _StateFinder.findState<C>(this);
+    if (state == null) {
+      throw StateError(
+        'Cannot access cubit before the widget is mounted. '
+        'Access it in the build method or after initState.',
+      );
+    }
+    return state.cubit as C;
+  }
 
   @override
   // ignore: library_private_types_in_public_api
@@ -78,6 +98,15 @@ abstract class BaseView<C extends BaseCubit> extends StatefulWidget {
   Widget build(BuildContext context);
 }
 
+/// Helper class to find state instances
+class _StateFinder {
+  static _State<BaseView, BaseCubit>? findState<C extends BaseCubit>(BaseView<C> widget) {
+    return _stateRegistry[widget];
+  }
+
+  static final Map<BaseView, _State<BaseView, BaseCubit>> _stateRegistry = {};
+}
+
 class _State<T extends BaseView, C extends BaseCubit> extends State<T> {
   late final C cubit; // Ensures cubit persists
 
@@ -85,21 +114,15 @@ class _State<T extends BaseView, C extends BaseCubit> extends State<T> {
   @protected
   void initState() {
     super.initState();
-    widget._state = this;
+    _StateFinder._stateRegistry[widget] = this as _State<BaseView, BaseCubit>;
     widget.dependencies?.inject();
     cubit = get<C>(); // Initialize cubit only once
   }
 
   @override
-  void didUpdateWidget(covariant T oldWidget) {
-    super.didUpdateWidget(oldWidget);
-    widget._state = this;
-  }
-
-  @override
   void dispose() {
+    _StateFinder._stateRegistry.remove(widget);
     getIt.unregister<C>(disposingFunction: (instance) => instance.onDispose());
-    widget._state = null;
     super.dispose();
   }
 
@@ -112,9 +135,7 @@ class _State<T extends BaseView, C extends BaseCubit> extends State<T> {
       listenWhen: widget.listenWhen,
       listener: (context, state) {
         if (widget.fullRebuildWhen?.call(context, state) == true) {
-          setState(() {
-            AppLogger.white('${widget.runtimeType} rebuilt');
-          });
+          AppLogger.white('${widget.runtimeType} rebuilt');
         }
         if (widget.onUpdate != null) widget.onUpdate!.call(context, state);
 

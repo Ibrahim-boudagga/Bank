@@ -3,6 +3,11 @@ import 'package:bank/app/config/app_config.dart';
 import 'package:flutter/material.dart';
 
 void main() {
-  AppConfig()..setAppName('Bank Wallet')..setDebugShowCheckedModeBanner(false);
+  WidgetsFlutterBinding.ensureInitialized();
+
+  AppConfig()
+    ..setAppName('Bank Wallet')
+    ..setDebugShowCheckedModeBanner(false)
+    ..setAppTheme(.light);
   runApp(const AppWidget());
 }
