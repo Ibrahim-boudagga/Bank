@@ -4,11 +4,7 @@ import 'package:flutter/material.dart';
 
 /// Circle avatar with optional online indicator and name label for blob suggested contacts.
 class ContactCircle extends StatelessWidget {
-  const ContactCircle({
-    super.key,
-    required this.name,
-    required this.color,
-  });
+  const ContactCircle({super.key, required this.name, required this.color});
 
   final String name;
   final Color color;
@@ -56,10 +52,7 @@ class ContactCircle extends StatelessWidget {
           ],
         ),
         const SizedBox(height: AppSpacing.sm),
-        Text(
-          name,
-          style: AppTextStyles.islandContactName.copyWith(color: AppColors.textSecondary),
-        ),
+        Text(name, style: AppTextStyles.islandContactName.copyWith(color: AppColors.textSecondary)),
       ],
     );
   }

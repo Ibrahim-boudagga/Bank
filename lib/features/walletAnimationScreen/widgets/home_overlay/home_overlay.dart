@@ -155,7 +155,7 @@ class HomeOverlay extends SubView<WalletAnimationCubit> {
                         ],
                       ),
                       child: ClipRRect(
-                        borderRadius: BorderRadius.circular(currentRadius),
+                        borderRadius: .circular(currentRadius),
                         child: BlobContent(
                           progress: smoothProgress,
                           onClose: cubit.closeIsland,

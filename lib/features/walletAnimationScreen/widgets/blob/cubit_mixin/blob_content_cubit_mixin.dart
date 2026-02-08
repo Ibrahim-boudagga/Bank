@@ -26,10 +26,27 @@ mixin BlobContentCubitMixin on BaseCubit<WalletAnimationState> {
         'Wade Warren',
         'Devon Lane',
         'Molly Sanders',
+        'Theresa Webb',
+        'Kristin Watson',
+        'Ralph Edwards',
+        'Leslie Alexander',
+        'Floyd Miles',
+        'Eleanor Pena',
+        'Marvin McKinney',
+        'Guy Hawkins',
+        'Dianne Russell',
+        'Jenny Wilson',
+        'Jacob Jones',
+        'Courtney Henry',
+        'Ronald Richards',
+        'Albert Flores',
       ];
 
   /// Initials for the contact list avatars (one per [contactListNames]).
-  List<String> get contactListInitials => const ['A', 'C', 'J', 'W', 'D', 'M'];
+  List<String> get contactListInitials => const [
+        'A', 'C', 'J', 'W', 'D', 'M', 'T', 'K', 'R', 'L',
+        'F', 'E', 'M', 'G', 'D', 'J', 'J', 'C', 'R', 'A',
+      ];
 
   /// Avatar color for contact list item at [index]. Uses [AppColors.avatarColors].
   Color avatarColorForIndex(int index) =>

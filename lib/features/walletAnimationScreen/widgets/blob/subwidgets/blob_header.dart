@@ -2,16 +2,11 @@ import 'package:bank/app/design/colors/app_colors.dart';
 import 'package:bank/app/design/theme/app_theme.dart';
 import 'package:flutter/material.dart';
 
-/// Expanded header: "Send" / "Money To" title and close button.
+/// Expanded header: "Send" / "Money To" title. Close button is shown separately (sticky in BlobContent).
 class BlobHeader extends StatelessWidget {
-  const BlobHeader({
-    super.key,
-    required this.screenWidth,
-    required this.onClose,
-  });
+  const BlobHeader({super.key, required this.screenWidth});
 
   final double screenWidth;
-  final VoidCallback onClose;
 
   @override
   Widget build(BuildContext context) {
@@ -20,11 +15,13 @@ class BlobHeader extends StatelessWidget {
 
     return SliverToBoxAdapter(
       child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        mainAxisAlignment: .spaceBetween,
         children: [
           Flexible(
             child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
+              crossAxisAlignment: .start,
+              mainAxisSize: .min,
+              spacing: AppSpacing.xs,
               children: [
                 Text(
                   'Send',
@@ -32,12 +29,11 @@ class BlobHeader extends StatelessWidget {
                     color: AppColors.textSecondary,
                     fontSize: titleFontSize,
                   ),
-                  overflow: TextOverflow.ellipsis,
+                  overflow: .ellipsis,
                   maxLines: 1,
                 ),
-                const SizedBox(height: AppSpacing.xs),
                 FittedBox(
-                  fit: BoxFit.scaleDown,
+                  fit: .scaleDown,
                   alignment: Alignment.centerLeft,
                   child: Text(
                     'Money To',
@@ -50,18 +46,7 @@ class BlobHeader extends StatelessWidget {
               ],
             ),
           ),
-          IconButton(
-            onPressed: onClose,
-            icon: const Icon(Icons.close, color: AppColors.textPrimary),
-            style: IconButton.styleFrom(
-              backgroundColor: AppColors.glassSurface,
-              shape: const CircleBorder(),
-              side: BorderSide(
-                color: AppColors.specularWhite.withValues(alpha: 0.1),
-                width: 1,
-              ),
-            ),
-          ),
+          const SizedBox(width: 48, height: 48),
         ],
       ),
     );

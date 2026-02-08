@@ -2,6 +2,8 @@ import 'package:bank/app/design/colors/app_colors.dart';
 import 'package:bank/app/design/theme/app_theme.dart';
 import 'package:flutter/material.dart';
 
+import '../../../../common/widgets/spacing.dart';
+
 /// Collapsed pill row: "Send to" + overlapping contact avatars.
 class BlobPillContent extends StatelessWidget {
   const BlobPillContent({
@@ -25,9 +27,9 @@ class BlobPillContent extends StatelessWidget {
       opacity: pillAlpha,
       child: Center(
         child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: AppSpacing.screenPadding),
+          padding: const EdgeInsets.symmetric(horizontal: AppSpacing.screenPadding / 1.5),
           child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            mainAxisAlignment: .spaceBetween,
             children: [
               Row(
                 children: [
@@ -35,7 +37,7 @@ class BlobPillContent extends StatelessWidget {
                     'Send',
                     style: AppTextStyles.islandPill.copyWith(color: AppColors.silverText),
                   ),
-                  SizedBox(width: screenWidth * 0.01),
+                  HorizontalSpacing(spacing: screenWidth * 0.01),
                   Text(
                     'to',
                     style: AppTextStyles.islandPill.copyWith(color: AppColors.textPrimary),

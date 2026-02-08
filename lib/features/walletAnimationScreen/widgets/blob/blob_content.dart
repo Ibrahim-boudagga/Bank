@@ -1,9 +1,10 @@
+import 'package:bank/app/design/colors/app_colors.dart';
 import 'package:bank/app/design/theme/app_theme.dart';
 import 'package:flutter/material.dart';
 
 import 'subwidgets/subwidgets.dart';
 
-/// Content shown inside the Dynamic Island when expanded: "Send Money To", contacts, list, continue.
+/// Content shown inside the Dynamic Island when expanded: "Send Money To", contacts, list.
 /// Data (names, colors) is provided by the parent from [BlobContentCubitMixin].
 class BlobContent extends StatelessWidget {
   const BlobContent({
@@ -32,7 +33,6 @@ class BlobContent extends StatelessWidget {
     final contentAlpha = ((progress - 0.2) / 0.4).clamp(0.0, 1.0);
     final contentParallax = (1.0 - progress) * 100.0;
     final bubbleScale = (progress * 1.2).clamp(0.0, 1.0);
-    final buttonScale = (progress * 1.5 - 0.5).clamp(0.0, 1.0);
 
     return Stack(
       children: [
@@ -47,35 +47,55 @@ class BlobContent extends StatelessWidget {
           offset: Offset(0, contentParallax),
           child: Opacity(
             opacity: contentAlpha,
-            child: Padding(
-              padding: const EdgeInsets.all(AppSpacing.xl),
-              child: CustomScrollView(
-                slivers: [
-                  BlobHeader(screenWidth: screenWidth, onClose: onClose),
-                  const SliverToBoxAdapter(child: SizedBox(height: AppSpacing.xxl)),
-                  BlobSuggestedContacts(
-                    bubbleScale: bubbleScale,
-                    suggestedContactNames: suggestedContactNames,
-                    suggestedContactColors: suggestedContactColors,
-                    avatarColorForIndex: avatarColorForIndex,
+            child: Stack(
+              children: [
+                Padding(
+                  padding: const .only(
+                    left: AppSpacing.xl,
+                    right: AppSpacing.xl,
+                    top: AppSpacing.xxxl,
                   ),
-                  const SliverToBoxAdapter(child: SizedBox(height: AppSpacing.xxl)),
-                  const SliverToBoxAdapter(child: BlobSectionTitle()),
-                  const SliverToBoxAdapter(child: SizedBox(height: AppSpacing.lg)),
-                  BlobContactList(
-                    progress: progress,
-                    contactListNames: contactListNames,
-                    contactListInitials: contactListInitials,
-                    avatarColorForIndex: avatarColorForIndex,
-                  ),
-                  SliverToBoxAdapter(
-                    child: BlobContinueButton(
-                      screenWidth: screenWidth,
-                      buttonScale: buttonScale,
+                  child: NotificationListener<ScrollNotification>(
+                    onNotification: (_) => true,
+                    child: CustomScrollView(
+                      slivers: [
+                        BlobHeader(screenWidth: screenWidth),
+                        const SliverToBoxAdapter(child: SizedBox(height: AppSpacing.xxl)),
+                        BlobSuggestedContacts(
+                          bubbleScale: bubbleScale,
+                          suggestedContactNames: suggestedContactNames,
+                          suggestedContactColors: suggestedContactColors,
+                          avatarColorForIndex: avatarColorForIndex,
+                        ),
+                        const BlobPinnedSectionTitle(),
+                        const SliverToBoxAdapter(child: SizedBox(height: AppSpacing.lg)),
+                        BlobContactList(
+                          progress: progress,
+                          contactListNames: contactListNames,
+                          contactListInitials: contactListInitials,
+                          avatarColorForIndex: avatarColorForIndex,
+                        ),
+                      ],
                     ),
                   ),
-                ],
-              ),
+                ),
+                Positioned(
+                  top: AppSpacing.sm,
+                  right: AppSpacing.xl,
+                  child: IconButton(
+                    onPressed: onClose,
+                    icon: const Icon(Icons.close, color: AppColors.textPrimary),
+                    style: IconButton.styleFrom(
+                      backgroundColor: AppColors.glassSurface,
+                      shape: const CircleBorder(),
+                      side: BorderSide(
+                        color: AppColors.specularWhite.withValues(alpha: 0.1),
+                        width: 1,
+                      ),
+                    ),
+                  ),
+                ),
+              ],
             ),
           ),
         ),

@@ -20,10 +20,15 @@ class WalletAnimationScreen extends BaseView<WalletAnimationCubit> {
 
   @override
   Widget build(BuildContext context) =>
-      BlocSelector<WalletAnimationCubit, WalletAnimationState, TransactionStatus>(
-        selector: (state) => state.status!,
-        builder: (context, isLoading) {
-          final loading = isLoading == .loading;
+      BlocSelector<WalletAnimationCubit, WalletAnimationState, (TransactionStatus, double)>(
+        selector: (state) => (state.status!, state.islandState.height),
+        builder: (context, data) {
+          final loading = data.$1 == .loading;
+          final islandHeight = data.$2;
+          final topPadding = MediaQuery.paddingOf(context).top;
+          final overlayHeight = islandHeight > AppSpacing.visaCardAreaHeight
+              ? (islandHeight + topPadding + AppSpacing.lg)
+              : (topPadding + AppSpacing.islandStartHeight + AppSpacing.lg);
           return Scaffold(
             body: Stack(
               children: [
@@ -58,9 +63,9 @@ class WalletAnimationScreen extends BaseView<WalletAnimationCubit> {
                   top: 0,
                   left: 0,
                   right: 0,
-                  height: AppSpacing.visaCardAreaHeight,
+                  height: overlayHeight,
                   child: HomeOverlay(
-                    topPadding: MediaQuery.paddingOf(context).top,
+                    topPadding: topPadding,
                     profileImageUrl: '', // Pass user profile image URL when available
                     showProfileButton: true,
                     isLoading: loading,
