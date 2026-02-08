@@ -1,5 +1,6 @@
 import 'package:bank/app/design/colors/app_colors.dart';
 import 'package:bank/app/design/theme/app_theme.dart';
+import 'package:bank/features/common/widgets/avatar_image.dart';
 import 'package:flutter/material.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 
@@ -12,12 +13,14 @@ class HomeOverlay extends StatefulWidget {
     super.key,
     required this.topPadding,
     required this.onProfileClick,
+    required this.profileImageUrl,
     this.showProfileButton = true,
     this.isLoading = false,
   });
 
   final double topPadding;
   final VoidCallback onProfileClick;
+  final String profileImageUrl;
   final bool showProfileButton;
   final bool isLoading;
 
@@ -114,7 +117,7 @@ class _HomeOverlayState extends State<HomeOverlay> with SingleTickerProviderStat
     final smoothProgress = _islandProgress;
 
     return Stack(
-      clipBehavior: Clip.none,
+      clipBehavior: .none,
       children: [
         if (widget.showProfileButton)
           Positioned(
@@ -126,18 +129,8 @@ class _HomeOverlayState extends State<HomeOverlay> with SingleTickerProviderStat
                 opacity: 1 - smoothProgress,
                 child: GestureDetector(
                   onTap: widget.onProfileClick,
-                  behavior: HitTestBehavior.opaque,
-                  child: Container(
-                    width: 52,
-                    height: 52,
-                    decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      border: Border.all(
-                        color: AppColors.electricAccent.withValues(alpha: 0.5),
-                        width: 1,
-                      ),
-                    ),
-                  ),
+                  behavior: .opaque,
+                  child: AvatarImage(url: widget.profileImageUrl, size: .new(52, 52)),
                 ),
               ),
             ),

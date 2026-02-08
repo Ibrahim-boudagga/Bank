@@ -62,6 +62,7 @@ class WalletAnimationScreen extends BaseView<WalletAnimationCubit> {
                   child: HomeOverlay(
                     topPadding: MediaQuery.paddingOf(context).top,
                     onProfileClick: () => Navigator.of(context).pushNamed('/profile'),
+                    profileImageUrl: '', // Pass user profile image URL when available
                     showProfileButton: true,
                     isLoading: loading,
                   ),
