@@ -1,216 +1,167 @@
 import 'package:bank/app/design/colors/app_colors.dart';
 import 'package:bank/app/design/theme/app_theme.dart';
+import 'package:bank/core/base/view/sub_view.dart';
 import 'package:bank/features/common/widgets/avatar_image.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 
+import '../../cubit/wallet_animation_cubit.dart';
+import '../../cubit/wallet_animation_state.dart';
 import '../blob/blob_content.dart';
 
 /// Overlay for wallet home: profile button, add-money button, and draggable Dynamic Island.
-/// Stack this on top of the main scroll content. Same design as example [HomeContent] overlay.
-class HomeOverlay extends StatefulWidget {
+/// Logic lives in [HomeOverlayCubitMixin]; this widget is UI only.
+class HomeOverlay extends SubView<WalletAnimationCubit> {
   const HomeOverlay({
     super.key,
     required this.topPadding,
-    required this.onProfileClick,
     required this.profileImageUrl,
     this.showProfileButton = true,
     this.isLoading = false,
   });
 
   final double topPadding;
-  final VoidCallback onProfileClick;
   final String profileImageUrl;
   final bool showProfileButton;
   final bool isLoading;
-
-  @override
-  State<HomeOverlay> createState() => _HomeOverlayState();
-}
-
-class _HomeOverlayState extends State<HomeOverlay> with SingleTickerProviderStateMixin {
-  late AnimationController _islandController;
-  double _islandHeight = AppSpacing.islandStartHeight;
-  double _islandProgress = 0.0;
-
-  @override
-  void initState() {
-    super.initState();
-    _islandController = AnimationController(
-      vsync: this,
-      duration: const Duration(milliseconds: 400),
-    );
-  }
-
-  @override
-  void dispose() {
-    _islandController.dispose();
-    super.dispose();
-  }
-
-  void _updateIslandProgress(double height) {
-    final screenHeight = MediaQuery.sizeOf(context).height;
-    final endHeight = screenHeight - AppSpacing.islandBottomMargin;
-    final startHeight = AppSpacing.islandStartHeight;
-    final progress = ((height - startHeight) / (endHeight - startHeight)).clamp(0.0, 1.0);
-    setState(() => _islandProgress = progress);
-  }
-
-  void _onVerticalDragUpdate(DragUpdateDetails details) {
-    final screenHeight = MediaQuery.sizeOf(context).height;
-    final endHeight = screenHeight - AppSpacing.islandBottomMargin;
-    final newHeight = (_islandHeight + details.delta.dy).clamp(
-      AppSpacing.islandStartHeight,
-      endHeight,
-    );
-    setState(() => _islandHeight = newHeight);
-    _updateIslandProgress(newHeight);
-  }
-
-  void _onVerticalDragEnd(DragEndDetails details) {
-    final screenHeight = MediaQuery.sizeOf(context).height;
-    final endHeight = screenHeight - AppSpacing.islandBottomMargin;
-    final threshold = (AppSpacing.islandStartHeight + endHeight) / 2;
-    final velocity = details.velocity.pixelsPerSecond.dy;
-
-    final shouldExpand = velocity > 500 || _islandHeight > threshold;
-    final targetHeight = shouldExpand ? endHeight : AppSpacing.islandStartHeight;
-
-    _islandController.reset();
-    _islandController.forward().then((_) {
-      setState(() => _islandHeight = targetHeight);
-      _updateIslandProgress(targetHeight);
-    });
-  }
-
-  void _closeIsland() {
-    _islandController.reset();
-    _islandController.forward().then((_) {
-      setState(() => _islandHeight = AppSpacing.islandStartHeight);
-      _updateIslandProgress(AppSpacing.islandStartHeight);
-    });
-  }
 
   static const double _profileButtonSize = 52.0;
   static const double _gapBetweenButtonAndIsland = 16.0;
 
   @override
   Widget build(BuildContext context) {
-    final screenWidth = MediaQuery.sizeOf(context).width;
-    final leftZoneEnd =
-        AppSpacing.screenHorizontal + _profileButtonSize + _gapBetweenButtonAndIsland;
-    final rightZoneStart =
-        screenWidth - AppSpacing.screenHorizontal - _profileButtonSize - _gapBetweenButtonAndIsland;
-    final middleZoneWidth = (rightZoneStart - leftZoneEnd).clamp(0.0, double.infinity);
-    final endWidth = middleZoneWidth;
+    return BlocSelector<WalletAnimationCubit, WalletAnimationState, IslandState>(
+      selector: (state) => state.islandState,
+      builder: (context, state) {
+        final screenWidth = MediaQuery.sizeOf(context).width;
+        final screenHeight = MediaQuery.sizeOf(context).height;
+        final smoothProgress = state.progress;
 
-    final widthProgress = _cubicBezierEasing(_islandProgress);
-    final currentWidth = _lerp(AppSpacing.islandStartWidth, endWidth, widthProgress);
-    final islandWidth = currentWidth.clamp(0.0, middleZoneWidth);
-    final islandLeft = leftZoneEnd + (middleZoneWidth - islandWidth) / 2;
-    final currentRadius = _lerp(
-      AppSpacing.islandStartRadius,
-      AppSpacing.islandEndRadius,
-      widthProgress,
-    );
+        final leftZoneEnd =
+            AppSpacing.screenHorizontal + _profileButtonSize + _gapBetweenButtonAndIsland;
+        final rightZoneStart =
+            screenWidth -
+            AppSpacing.screenHorizontal -
+            _profileButtonSize -
+            _gapBetweenButtonAndIsland;
+        final middleZoneWidth = (rightZoneStart - leftZoneEnd).clamp(0.0, double.infinity);
+        // Collapsed: same pill width. Expanded: much wider (nearly full screen).
+        const expandedHorizontalPadding = 16.0;
+        final expandedMaxWidth = screenWidth - expandedHorizontalPadding * 2;
+        final widthProgress = _cubicBezierEasing(smoothProgress);
+        final currentWidth = _lerp(AppSpacing.islandStartWidth, expandedMaxWidth, widthProgress);
+        final islandWidth = currentWidth;
+        // When collapsed: center in middle zone. When expanded: center on screen.
+        final collapsedLeft = leftZoneEnd + (middleZoneWidth - islandWidth) / 2;
+        final expandedLeft = (screenWidth - islandWidth) / 2;
+        final islandLeft = _lerp(collapsedLeft, expandedLeft, widthProgress);
+        final currentRadius = _lerp(
+          AppSpacing.islandStartRadius,
+          AppSpacing.islandEndRadius,
+          widthProgress,
+        );
 
-    final smoothProgress = _islandProgress;
-
-    return Stack(
-      clipBehavior: .none,
-      children: [
-        if (widget.showProfileButton)
-          Positioned(
-            top: widget.topPadding + 2,
-            left: AppSpacing.screenHorizontal,
-            child: IgnorePointer(
-              ignoring: smoothProgress > 0.1,
+        return Stack(
+          clipBehavior: Clip.none,
+          children: [
+            if (showProfileButton)
+              Positioned(
+                top: topPadding + 2,
+                left: AppSpacing.md,
+                child: IgnorePointer(
+                  ignoring: smoothProgress > 0.1,
+                  child: Opacity(
+                    opacity: 1 - smoothProgress,
+                    child: GestureDetector(
+                      onTap: () => cubit.openProfile(),
+                      behavior: .opaque,
+                      child: AvatarImage(
+                        url: profileImageUrl,
+                        size: .new(_profileButtonSize, _profileButtonSize),
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            Positioned(
+              top: topPadding + 2,
+              right: AppSpacing.md,
               child: Opacity(
                 opacity: 1 - smoothProgress,
-                child: GestureDetector(
-                  onTap: widget.onProfileClick,
-                  behavior: .opaque,
-                  child: AvatarImage(url: widget.profileImageUrl, size: .new(52, 52)),
-                ),
-              ),
-            ),
-          ),
-        Positioned(
-          top: widget.topPadding + 2,
-          right: AppSpacing.screenHorizontal,
-          child: Opacity(
-            opacity: 1 - smoothProgress,
-            child: Container(
-              width: 52,
-              height: 52,
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                gradient: const LinearGradient(
-                  colors: [AppColors.spaceStart, AppColors.spaceEnd],
-                  begin: Alignment.topCenter,
-                  end: Alignment.bottomCenter,
-                ),
-                border: Border.all(
-                  color: AppColors.electricAccent.withValues(alpha: 0.5),
-                  width: 1,
-                ),
-              ),
-              child: const Icon(Icons.add, color: Colors.white, size: 24),
-            ),
-          ),
-        ),
-        Positioned(
-          top: widget.topPadding,
-          left: islandLeft,
-          child: Skeletonizer(
-            enabled: widget.isLoading,
-            enableSwitchAnimation: true,
-            child: IgnorePointer(
-              ignoring: widget.isLoading,
-              child: GestureDetector(
-                onVerticalDragUpdate: _onVerticalDragUpdate,
-                onVerticalDragEnd: _onVerticalDragEnd,
                 child: Container(
-                  width: islandWidth,
-                  height: _islandHeight,
+                  width: _profileButtonSize,
+                  height: _profileButtonSize,
                   decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(currentRadius),
+                    shape: BoxShape.circle,
                     gradient: const LinearGradient(
                       colors: [AppColors.spaceStart, AppColors.spaceEnd],
                       begin: Alignment.topCenter,
                       end: Alignment.bottomCenter,
                     ),
-                    border: Border.all(
-                      width: 1,
-                      color: AppColors.electricAccent.withValues(alpha: 0.5),
-                    ),
-                    boxShadow: [
-                      BoxShadow(
-                        color: const Color(0xFF4F46E5).withValues(alpha: 0.8 * smoothProgress),
-                        blurRadius: smoothProgress * 40,
-                        spreadRadius: smoothProgress * 5,
-                      ),
-                      BoxShadow(
-                        color: const Color(0xFFC084FC).withValues(alpha: 0.8 * smoothProgress),
-                        blurRadius: smoothProgress * 40,
-                        spreadRadius: smoothProgress * 2,
-                      ),
-                    ],
+                    border: .all(color: AppColors.electricAccent.withValues(alpha: 0.5), width: 1),
                   ),
-                  child: ClipRRect(
-                    borderRadius: BorderRadius.circular(currentRadius),
-                    child: BlobContent(progress: smoothProgress, onClose: _closeIsland),
+                  child: const Icon(Icons.add, color: Colors.white, size: 24),
+                ),
+              ),
+            ),
+            Positioned(
+              top: topPadding,
+              left: islandLeft,
+              child: Skeletonizer(
+                enabled: isLoading,
+                enableSwitchAnimation: true,
+                child: IgnorePointer(
+                  ignoring: isLoading,
+                  child: GestureDetector(
+                    onVerticalDragUpdate: (details) =>
+                        cubit.onIslandDragUpdate(details.delta.dy, screenHeight),
+                    onVerticalDragEnd: (details) =>
+                        cubit.onIslandDragEnd(details.velocity.pixelsPerSecond.dy, screenHeight),
+                    child: Container(
+                      width: islandWidth,
+                      height: state.height,
+                      decoration: BoxDecoration(
+                        borderRadius: .circular(currentRadius),
+                        gradient: const LinearGradient(
+                          colors: [AppColors.spaceStart, AppColors.spaceEnd],
+                          begin: .topCenter,
+                          end: .bottomCenter,
+                        ),
+                        border: .all(
+                          width: 1,
+                          color: AppColors.electricAccent.withValues(alpha: 0.5),
+                        ),
+                        boxShadow: [
+                          BoxShadow(
+                            color: const Color(0xFF4F46E5).withValues(alpha: 0.8 * smoothProgress),
+                            blurRadius: smoothProgress,
+                            spreadRadius: smoothProgress,
+                          ),
+                          BoxShadow(
+                            color: AppColors.spaceStart.withValues(alpha: 0.8 * smoothProgress),
+
+                            blurRadius: smoothProgress,
+                            spreadRadius: smoothProgress,
+                          ),
+                        ],
+                      ),
+                      child: ClipRRect(
+                        borderRadius: .circular(currentRadius),
+                        child: BlobContent(progress: smoothProgress, onClose: cubit.closeIsland),
+                      ),
+                    ),
                   ),
                 ),
               ),
             ),
-          ),
-        ),
-      ],
+          ],
+        );
+      },
     );
   }
 
-  double _lerp(double start, double end, double t) => start + (end - start) * t;
+  static double _lerp(double start, double end, double t) => start + (end - start) * t;
 
-  double _cubicBezierEasing(double t) => t * t * (3.0 - 2.0 * t);
+  static double _cubicBezierEasing(double t) => t * t * (3.0 - 2.0 * t);
 }
