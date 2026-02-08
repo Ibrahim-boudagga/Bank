@@ -13,16 +13,16 @@ part 'widgets/front_card.dart';
 ///
 /// Uses [VisaCardController]: pass [controller] to reuse one (call [VisaCardController.init]
 /// and [VisaCardController.dispose] yourself), or the card creates and owns one.
-class VcisaCard extends StatefulWidget {
-  const VcisaCard({super.key, this.controller});
+class VisaCard extends StatefulWidget {
+  const VisaCard({super.key, this.controller});
 
   final VisaCardController? controller;
 
   @override
-  State<VcisaCard> createState() => _VcisaCardState();
+  State<VisaCard> createState() => _VisaCardState();
 }
 
-class _VcisaCardState extends State<VcisaCard> with TickerProviderStateMixin {
+class _VisaCardState extends State<VisaCard> with TickerProviderStateMixin {
   late final VisaCardController _controller;
   bool _ownsController = false;
 
@@ -59,11 +59,11 @@ class _VcisaCardState extends State<VcisaCard> with TickerProviderStateMixin {
               ..setEntry(3, 2, 0.001)
               ..rotateY(_controller.rotation.value * 3.14159 / 180),
             child: _controller.isFrontVisible.value
-                ? _VcisaCardFront(shimmerPhase: _controller.shimmerPhase.value, height: cardHeight)
+                ? _VisaCardFront(shimmerPhase: _controller.shimmerPhase.value, height: cardHeight)
                 : Transform(
                     alignment: .center,
                     transform: .identity()..rotateY(3.14159),
-                    child: _VcisaCardBack(
+                    child: _VisaCardBack(
                       height: cardHeight,
                       cvc: '892',
                       cardHolder: 'IRAHIM BOUDAGGA',

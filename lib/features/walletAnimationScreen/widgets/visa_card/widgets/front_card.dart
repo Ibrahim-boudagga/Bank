@@ -1,7 +1,7 @@
-part of '../vcisa_card.dart';
+part of '../visa_card.dart';
 
-class _VcisaCardFront extends StatelessWidget {
-  const _VcisaCardFront({required this.shimmerPhase, required this.height});
+class _VisaCardFront extends StatelessWidget {
+  const _VisaCardFront({required this.shimmerPhase, required this.height});
 
   final double shimmerPhase;
   final double height;

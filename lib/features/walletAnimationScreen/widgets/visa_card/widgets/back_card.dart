@@ -1,7 +1,7 @@
-part of '../vcisa_card.dart';
+part of '../visa_card.dart';
 
-class _VcisaCardBack extends StatelessWidget {
-  const _VcisaCardBack({
+class _VisaCardBack extends StatelessWidget {
+  const _VisaCardBack({
     required this.height,
     required this.cvc,
     required this.cardHolder,

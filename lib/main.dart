@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
 
-  AppConfig()
+  appConfig
     ..setAppName('Bank Wallet')
     ..setDebugShowCheckedModeBanner(false)
     ..setAppTheme(.light)
