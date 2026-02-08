@@ -1,6 +1,8 @@
 import 'package:bank/app/design/colors/app_colors.dart';
+import 'package:bank/app/design/theme/app_theme.dart';
 import 'package:flutter/material.dart';
 
+/// Circle avatar with optional online indicator and name label for blob suggested contacts.
 class ContactCircle extends StatelessWidget {
   const ContactCircle({
     super.key,
@@ -25,12 +27,21 @@ class ContactCircle extends StatelessWidget {
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
                 gradient: LinearGradient(
-                  colors: [color, color.withOpacity(0.6)],
+                  colors: [color, color.withValues(alpha: 0.6)],
                   begin: Alignment.topCenter,
                   end: Alignment.bottomCenter,
                 ),
               ),
-              child: const Icon(Icons.person, color: Colors.white, size: 28),
+              child: Center(
+                child: Text(
+                  name.isNotEmpty ? name.substring(0, 1).toUpperCase() : '?',
+                  style: AppTextStyles.islandContactName.copyWith(
+                    fontSize: 24,
+                    fontWeight: FontWeight.bold,
+                    color: AppColors.black.withValues(alpha: 0.6),
+                  ),
+                ),
+              ),
             ),
             Container(
               width: 14,
@@ -44,13 +55,10 @@ class ContactCircle extends StatelessWidget {
             ),
           ],
         ),
-        const SizedBox(height: 8),
+        const SizedBox(height: AppSpacing.sm),
         Text(
           name,
-          style: const TextStyle(
-            color: AppColors.textSecondary,
-            fontSize: 12,
-          ),
+          style: AppTextStyles.islandContactName.copyWith(color: AppColors.textSecondary),
         ),
       ],
     );

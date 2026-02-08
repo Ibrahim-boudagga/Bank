@@ -17,12 +17,20 @@ class HomeOverlay extends SubView<WalletAnimationCubit> {
     super.key,
     required this.topPadding,
     required this.profileImageUrl,
+    this.profileName,
+    this.profileColor,
     this.showProfileButton = true,
     this.isLoading = false,
   });
 
   final double topPadding;
   final String profileImageUrl;
+
+  /// Used for contact-style fallback (first letter + color) when image fails or is empty.
+  final String? profileName;
+
+  /// Used for contact-style fallback. Defaults to [AppColors.spaceStart] if null.
+  final Color? profileColor;
   final bool showProfileButton;
   final bool isLoading;
 
@@ -147,8 +155,16 @@ class HomeOverlay extends SubView<WalletAnimationCubit> {
                         ],
                       ),
                       child: ClipRRect(
-                        borderRadius: .circular(currentRadius),
-                        child: BlobContent(progress: smoothProgress, onClose: cubit.closeIsland),
+                        borderRadius: BorderRadius.circular(currentRadius),
+                        child: BlobContent(
+                          progress: smoothProgress,
+                          onClose: cubit.closeIsland,
+                          suggestedContactNames: cubit.suggestedContactNames,
+                          suggestedContactColors: cubit.suggestedContactColors,
+                          contactListNames: cubit.contactListNames,
+                          contactListInitials: cubit.contactListInitials,
+                          avatarColorForIndex: cubit.avatarColorForIndex,
+                        ),
                       ),
                     ),
                   ),
