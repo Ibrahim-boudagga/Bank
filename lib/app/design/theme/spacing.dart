@@ -32,4 +32,7 @@ class AppSpacing {
   static const double transactionItemSpacing = 12.0;
   static const double menuItemSpacing = 12.0;
   static const double statBoxSpacing = 32.0;
+
+  static const double visaCardAreaHeight = 280.0;
+  static const double visaCardAreaPadding = 330.0;
 }

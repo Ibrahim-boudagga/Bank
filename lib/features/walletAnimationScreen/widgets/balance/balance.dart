@@ -2,10 +2,9 @@ part of '../../wallet_animation_screen.dart';
 
 /// Balance section wrapped in a subtle card (rounded corners, surface background). Do not change color/style.
 class _BalanceCard extends StatelessWidget {
-  const _BalanceCard({required this.balance, required this.isLight});
+  const _BalanceCard({required this.balance});
 
-  final String balance;
-  final bool isLight;
+  final num balance;
 
   @override
   Widget build(BuildContext context) => Container(
@@ -18,12 +17,12 @@ class _BalanceCard extends StatelessWidget {
 
       boxShadow: [
         BoxShadow(
-          color: Colors.black.withValues(alpha: isLight ? 0.06 : 0.2),
+          color: Colors.black.withValues(alpha: 0.06),
           blurRadius: 16,
           offset: const .new(0, 4),
         ),
         BoxShadow(
-          color: Colors.black.withValues(alpha: isLight ? 0.03 : 0.12),
+          color: Colors.black.withValues(alpha: 0.03),
           blurRadius: 6,
           offset: const .new(0, 2),
         ),
@@ -41,7 +40,7 @@ class _BalanceCard extends StatelessWidget {
           child: FittedBox(
             fit: .scaleDown,
             child: Text(
-              balance,
+              '\$${balance.toDouble().toStringAsFixed(2)}',
               style: AppTextStyles.balanceAmount.copyWith(color: AppColors.spaceStart),
             ),
           ),
