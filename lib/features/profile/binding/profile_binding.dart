@@ -5,8 +5,6 @@ import 'package:bank/features/profile/cubit/profile_state.dart';
 class ProfileBinding extends Dependencies {
   @override
   void inject() {
-    getIt.registerLazySingleton<ProfileCubit>(
-      () => ProfileCubit(const ProfileState()),
-    );
+    getIt.registerLazySingleton<ProfileCubit>(() => ProfileCubit(const ProfileState()));
   }
 }

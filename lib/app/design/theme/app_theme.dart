@@ -16,25 +16,24 @@ class AppTheme {
   // Light theme – clean banking (off-white, navy primary, teal accent)
   static ThemeData get lightTheme => ThemeData(
     useMaterial3: true,
-    colorScheme: ColorScheme.fromSeed(
-      seedColor: AppColors.accent,
-      brightness: Brightness.light,
-    ).copyWith(
-      primary: AppColors.primary,
-      surface: AppColors.surfaceLight,
-      surfaceContainerLowest: AppColors.surfaceLight,
-      surfaceContainerLow: AppColors.surfaceCardLight,
-      surfaceContainer: AppColors.surfaceCardLight,
-      surfaceContainerHigh: AppColors.surfaceCardLight,
-      surfaceContainerHighest: AppColors.surfaceCardLight,
-    ),
+    colorScheme: ColorScheme.fromSeed(seedColor: AppColors.accent, brightness: Brightness.light)
+        .copyWith(
+          primary: AppColors.primary,
+          surface: AppColors.surfaceLight,
+          surfaceContainerLowest: AppColors.surfaceLight,
+          surfaceContainerLow: AppColors.surfaceCardLight,
+          surfaceContainer: AppColors.surfaceCardLight,
+          surfaceContainerHigh: AppColors.surfaceCardLight,
+          surfaceContainerHighest: AppColors.surfaceCardLight,
+        ),
     scaffoldBackgroundColor: AppColors.surfaceLight,
   );
 
   //- Dark theme (main theme for this app)
   static ThemeData get darkTheme => ThemeData(
     useMaterial3: true,
-    colorScheme: ColorScheme.fromSeed(seedColor: AppColors.accent, brightness: Brightness.dark).copyWith(
+    colorScheme: ColorScheme.fromSeed(seedColor: AppColors.accent, brightness: Brightness.dark)
+        .copyWith(
           primary: AppColors.primary,
           surface: AppColors.spaceEnd,
           surfaceContainerLowest: AppColors.spaceEnd,
