@@ -40,15 +40,19 @@ class TransactionItem extends StatelessWidget {
             children: [
               Text(
                 transaction.title,
-                style: TextStyle(color: AppColors.black, fontSize: 15, fontWeight: .w600),
-                overflow: .ellipsis,
+                style: AppTextStyles.transactionTitle.copyWith(
+                  fontSize: 15,
+                  fontWeight: FontWeight.w600,
+                  color: AppColors.black,
+                ),
+                overflow: TextOverflow.ellipsis,
                 maxLines: 1,
               ),
               const SizedBox(height: 2),
               Text(
                 transaction.subtitle,
-                style: TextStyle(color: AppColors.textSecondary, fontSize: 12, fontWeight: .w500),
-                overflow: .ellipsis,
+                style: AppTextStyles.transactionLabel.copyWith(color: AppColors.textSecondary),
+                overflow: TextOverflow.ellipsis,
                 maxLines: 1,
               ),
             ],
@@ -56,13 +60,13 @@ class TransactionItem extends StatelessWidget {
         ),
         const SizedBox(width: AppSpacing.lg),
         Text(
-          transaction.amount,
-          style: TextStyle(
-            color: !transaction.isPositive ? AppColors.errorRed : AppColors.black,
+          transaction.amount.toString(),
+          style: AppTextStyles.transactionAmount.copyWith(
             fontSize: 15,
-            fontWeight: .w600,
+            fontWeight: FontWeight.w600,
+            color: transaction.amount > 0 ? AppColors.black : AppColors.errorRed,
           ),
-          textAlign: .right,
+          textAlign: TextAlign.right,
         ),
       ],
     ),

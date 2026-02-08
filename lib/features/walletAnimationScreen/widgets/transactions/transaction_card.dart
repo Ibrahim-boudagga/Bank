@@ -1,7 +1,6 @@
 part of '../../wallet_animation_screen.dart';
 
-/// Full-width sheet under the balance card. Curved top, sits visually below the balance (stack).
-class _TransactionsCard extends StatelessWidget {
+class _TransactionsCard extends SubView<WalletAnimationCubit> {
   const _TransactionsCard();
 
   @override
@@ -25,21 +24,16 @@ class _TransactionsCard extends StatelessWidget {
       crossAxisAlignment: .stretch,
       children: [
         const SizedBox(height: AppSpacing.lg),
-
         Padding(
-          padding: EdgeInsets.fromLTRB(0, AppSpacing.md, 0, AppSpacing.sm),
+          padding: const .fromLTRB(0, AppSpacing.md, 0, AppSpacing.sm),
           child: Padding(
-            padding: EdgeInsets.symmetric(horizontal: AppSpacing.screenHorizontal),
+            padding: const .symmetric(horizontal: AppSpacing.screenHorizontal),
             child: Row(
               mainAxisAlignment: .spaceBetween,
               children: [
                 Text(
                   'Recent transactions',
-                  style: TextStyle(
-                    color: AppColors.black,
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
-                  ),
+                  style: AppTextStyles.transactionTitle.copyWith(color: AppColors.black),
                 ),
                 TextButton(
                   onPressed: () {},
@@ -50,7 +44,7 @@ class _TransactionsCard extends StatelessWidget {
                   ),
                   child: Text(
                     'See all',
-                    style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600),
+                    style: AppTextStyles.transactionSubtitle.copyWith(fontSize: 14),
                   ),
                 ),
               ],
@@ -64,107 +58,39 @@ class _TransactionsCard extends StatelessWidget {
           indent: 0,
           endIndent: 0,
         ),
-        // Only the list scrolls
-        Expanded(
-          child: ListView.separated(
-            padding: .only(
-              top: AppSpacing.sm,
-              bottom: AppSpacing.xxl + MediaQuery.paddingOf(context).bottom,
-            ),
-            itemCount: _defaultTransactionsForSliver.length,
-            separatorBuilder: (_, _) => Divider(
-              height: 1,
-              thickness: 1,
-              color: Theme.of(context).dividerColor.withValues(alpha: 0.5),
-              indent: 48 + AppSpacing.lg,
-              endIndent: 0,
-            ),
-            itemBuilder: (context, index) => Padding(
-              padding: const EdgeInsets.symmetric(horizontal: AppSpacing.screenHorizontal),
-              child: TransactionItem(transaction: _defaultTransactionsForSliver[index]),
-            ),
-          ),
+        BlocSelector<WalletAnimationCubit, WalletAnimationState, TransactionStatus>(
+          selector: (state) => state.status!,
+          builder: (context, status) {
+            final list = cubit.state.transactions;
+            return Expanded(
+              child: status == .empty
+                  ? const _EmptyTransactions()
+                  : ListView.separated(
+                      padding: EdgeInsets.only(
+                        top: AppSpacing.sm,
+                        bottom: AppSpacing.xxl + MediaQuery.paddingOf(context).bottom,
+                      ),
+                      itemCount: list.length,
+                      separatorBuilder: (_, _) => Divider(
+                        height: 1,
+                        thickness: 1,
+                        color: Theme.of(context).dividerColor.withValues(alpha: 0.5),
+                        indent: 48 + AppSpacing.lg,
+                        endIndent: 0,
+                      ),
+                      itemBuilder: (context, index) => Padding(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: AppSpacing.screenHorizontal,
+                        ),
+                        child: TransactionItem(
+                          transaction: list[index],
+                        ).redacted(context: context, redact: status == .loading),
+                      ),
+                    ),
+            );
+          },
         ),
       ],
     ),
   );
 }
-
-/// Default transaction list for the wallet slivers (same as [TransactionsSection]).
-List<Transaction> get _defaultTransactionsForSliver => _defaultTransactionsList;
-final List<Transaction> _defaultTransactionsList = [
-  const Transaction(
-    icon: Icons.shopping_cart_outlined,
-    title: 'Whole Foods Market',
-    subtitle: 'Groceries • Today',
-    amount: '-\$124.50',
-  ),
-  const Transaction(
-    icon: Icons.movie_outlined,
-    title: 'Netflix',
-    subtitle: 'Entertainment • Yesterday',
-    amount: '-\$15.99',
-  ),
-  const Transaction(
-    icon: Icons.bolt_outlined,
-    title: 'Electric Bill',
-    subtitle: 'Utilities • Feb 12',
-    amount: '-\$85.00',
-  ),
-  const Transaction(
-    icon: Icons.account_balance_wallet_outlined,
-    title: 'Salary Deposit',
-    subtitle: 'Income • Feb 01',
-    amount: '+\$4,250.00',
-    isPositive: true,
-  ),
-  const Transaction(
-    icon: Icons.directions_car_outlined,
-    title: 'Uber Ride',
-    subtitle: 'Transport • Jan 30',
-    amount: '-\$24.20',
-  ),
-  const Transaction(
-    icon: Icons.phone_iphone_outlined,
-    title: 'Apple Store',
-    subtitle: 'Electronics • Jan 28',
-    amount: '-\$999.00',
-  ),
-  const Transaction(
-    icon: Icons.shopping_cart_outlined,
-    title: 'Whole Foods Market',
-    subtitle: 'Groceries • Today',
-    amount: '-\$124.50',
-  ),
-  const Transaction(
-    icon: Icons.movie_outlined,
-    title: 'Netflix',
-    subtitle: 'Entertainment • Yesterday',
-    amount: '-\$15.99',
-  ),
-  const Transaction(
-    icon: Icons.bolt_outlined,
-    title: 'Electric Bill',
-    subtitle: 'Utilities • Feb 12',
-    amount: '-\$85.00',
-  ),
-  const Transaction(
-    icon: Icons.account_balance_wallet_outlined,
-    title: 'Salary Deposit',
-    subtitle: 'Income • Feb 01',
-    amount: '+\$4,250.00',
-    isPositive: true,
-  ),
-  const Transaction(
-    icon: Icons.directions_car_outlined,
-    title: 'Uber Ride',
-    subtitle: 'Transport • Jan 30',
-    amount: '-\$24.20',
-  ),
-  const Transaction(
-    icon: Icons.phone_iphone_outlined,
-    title: 'Apple Store',
-    subtitle: 'Electronics • Jan 28',
-    amount: '-\$999.00',
-  ),
-];

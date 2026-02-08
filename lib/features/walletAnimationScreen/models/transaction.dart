@@ -8,15 +8,13 @@ class Transaction {
     required this.title,
     required this.subtitle,
     required this.amount,
-    this.isPositive = false,
     this.iconColor,
   });
 
   final IconData icon;
   final String title;
   final String subtitle;
-  final String amount;
-  final bool isPositive;
+  final num amount;
   final Color? iconColor;
 
   Color get effectiveIconColor => iconColor ?? AppColors.spaceStart;

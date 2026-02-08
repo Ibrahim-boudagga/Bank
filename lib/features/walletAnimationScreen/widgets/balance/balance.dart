@@ -34,7 +34,10 @@ class _BalanceCard extends StatelessWidget {
       children: [
         Text(
           'Your Balance',
-          style: TextStyle(color: AppColors.textSecondary, fontSize: 14, fontWeight: .w500),
+          style: AppTextStyles.transactionLabel.copyWith(
+            fontSize: 14,
+            color: AppColors.textSecondary,
+          ),
         ),
         Center(
           child: FittedBox(

@@ -1,6 +1,7 @@
 import 'package:bank/app/design/colors/app_colors.dart';
 import 'package:bank/app/design/theme/app_theme.dart';
 import 'package:flutter/material.dart';
+import 'package:skeletonizer/skeletonizer.dart';
 
 import '../blob/blob_content.dart';
 
@@ -12,11 +13,13 @@ class HomeOverlay extends StatefulWidget {
     required this.topPadding,
     required this.onProfileClick,
     this.showProfileButton = true,
+    this.isLoading = false,
   });
 
   final double topPadding;
   final VoidCallback onProfileClick;
   final bool showProfileButton;
+  final bool isLoading;
 
   @override
   State<HomeOverlay> createState() => _HomeOverlayState();
@@ -166,39 +169,46 @@ class _HomeOverlayState extends State<HomeOverlay> with SingleTickerProviderStat
         Positioned(
           top: widget.topPadding,
           left: islandLeft,
-          child: GestureDetector(
-            onVerticalDragUpdate: _onVerticalDragUpdate,
-            onVerticalDragEnd: _onVerticalDragEnd,
-            child: Container(
-              width: islandWidth,
-              height: _islandHeight,
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(currentRadius),
-                gradient: const LinearGradient(
-                  colors: [AppColors.spaceStart, AppColors.spaceEnd],
-                  begin: Alignment.topCenter,
-                  end: Alignment.bottomCenter,
-                ),
-                border: Border.all(
-                  width: 1,
-                  color: AppColors.electricAccent.withValues(alpha: 0.5),
-                ),
-                boxShadow: [
-                  BoxShadow(
-                    color: const Color(0xFF4F46E5).withValues(alpha: 0.8 * smoothProgress),
-                    blurRadius: smoothProgress * 40,
-                    spreadRadius: smoothProgress * 5,
+          child: Skeletonizer(
+            enabled: widget.isLoading,
+            enableSwitchAnimation: true,
+            child: IgnorePointer(
+              ignoring: widget.isLoading,
+              child: GestureDetector(
+                onVerticalDragUpdate: _onVerticalDragUpdate,
+                onVerticalDragEnd: _onVerticalDragEnd,
+                child: Container(
+                  width: islandWidth,
+                  height: _islandHeight,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(currentRadius),
+                    gradient: const LinearGradient(
+                      colors: [AppColors.spaceStart, AppColors.spaceEnd],
+                      begin: Alignment.topCenter,
+                      end: Alignment.bottomCenter,
+                    ),
+                    border: Border.all(
+                      width: 1,
+                      color: AppColors.electricAccent.withValues(alpha: 0.5),
+                    ),
+                    boxShadow: [
+                      BoxShadow(
+                        color: const Color(0xFF4F46E5).withValues(alpha: 0.8 * smoothProgress),
+                        blurRadius: smoothProgress * 40,
+                        spreadRadius: smoothProgress * 5,
+                      ),
+                      BoxShadow(
+                        color: const Color(0xFFC084FC).withValues(alpha: 0.8 * smoothProgress),
+                        blurRadius: smoothProgress * 40,
+                        spreadRadius: smoothProgress * 2,
+                      ),
+                    ],
                   ),
-                  BoxShadow(
-                    color: const Color(0xFFC084FC).withValues(alpha: 0.8 * smoothProgress),
-                    blurRadius: smoothProgress * 40,
-                    spreadRadius: smoothProgress * 2,
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(currentRadius),
+                    child: BlobContent(progress: smoothProgress, onClose: _closeIsland),
                   ),
-                ],
-              ),
-              child: ClipRRect(
-                borderRadius: BorderRadius.circular(currentRadius),
-                child: BlobContent(progress: smoothProgress, onClose: _closeIsland),
+                ),
               ),
             ),
           ),

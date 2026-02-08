@@ -21,8 +21,7 @@ class ProfileScreenContent extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final screenWidth = MediaQuery.sizeOf(context).width;
-    final textScale =
-        MediaQuery.textScalerOf(context).scale(1.0).clamp(0.8, 1.2);
+    final textScale = MediaQuery.textScalerOf(context).scale(1.0).clamp(0.8, 1.2);
     final nameFontSize = (screenWidth * 0.05).clamp(18.0, 20.0) * textScale;
     final verifiedFontSize = (screenWidth * 0.035).clamp(12.0, 14.0) * textScale;
 
@@ -47,9 +46,7 @@ class ProfileScreenContent extends StatelessWidget {
                       fit: BoxFit.scaleDown,
                       child: Text(
                         profileName,
-                        style: AppTextStyles.profileName.copyWith(
-                          fontSize: nameFontSize,
-                        ),
+                        style: AppTextStyles.profileName.copyWith(fontSize: nameFontSize),
                         textAlign: TextAlign.center,
                       ),
                     ),
@@ -87,20 +84,11 @@ class ProfileScreenContent extends StatelessWidget {
                       ],
                     ),
                     const SizedBox(height: AppSpacing.xxxl),
-                    const ProfileMenuItem(
-                      text: 'Account Settings',
-                      icon: Icons.settings,
-                    ),
+                    const ProfileMenuItem(text: 'Account Settings', icon: Icons.settings),
                     const SizedBox(height: AppSpacing.md),
-                    const ProfileMenuItem(
-                      text: 'Notifications',
-                      icon: Icons.notifications,
-                    ),
+                    const ProfileMenuItem(text: 'Notifications', icon: Icons.notifications),
                     const SizedBox(height: AppSpacing.md),
-                    const ProfileMenuItem(
-                      text: 'Privacy & Security',
-                      icon: Icons.security,
-                    ),
+                    const ProfileMenuItem(text: 'Privacy & Security', icon: Icons.security),
                     const SizedBox(height: AppSpacing.screenVertical),
                   ]),
                 ),
@@ -119,16 +107,9 @@ class ProfileScreenContent extends StatelessWidget {
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
                     color: AppColors.glassSurface,
-                    border: Border.all(
-                      color: Colors.white.withValues(alpha: 0.1),
-                      width: 1,
-                    ),
+                    border: Border.all(color: Colors.white.withValues(alpha: 0.1), width: 1),
                   ),
-                  child: const Icon(
-                    Icons.arrow_back,
-                    color: Colors.white,
-                    size: 20,
-                  ),
+                  child: const Icon(Icons.arrow_back, color: Colors.white, size: 20),
                 ),
               ),
             ),
